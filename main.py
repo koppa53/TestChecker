@@ -62,9 +62,11 @@ select_ans.pack()
 select_ans.place(x=990, y=275)
 
 paper_total = Label(gui, text = "Total Papers Checked:", bg = 'white', fg='#2F2E41', font=("Century Gothic", 14, "bold")).place(x = 625, y = 380)
+#note placeholder text
 ans_sheets = Label(gui, text = "20", bg = 'white', fg='#536DFE', font=("Century Gothic", 14, "bold")).place(x = 840, y = 380)
 
 passing_rate = Label(gui, text = "Passing Rate:", bg = 'white', fg='#2F2E41', font=("Century Gothic", 14, "bold")).place(x = 625, y = 420)
+#note placeholder text
 percentage = Label(gui, text = "98%", bg = 'white', fg='#536DFE', font=("Century Gothic", 14, "bold")).place(x = 750, y = 420)
 
 #text field for directory
