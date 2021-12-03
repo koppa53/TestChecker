@@ -1,8 +1,6 @@
 import cv2 as cv
 import numpy as np
 import os
-# changes
-# qweeqweqeqw
 
 
 def test_checker(answer, answer_key):
