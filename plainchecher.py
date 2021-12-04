@@ -7,6 +7,7 @@ def test_checker(answer, answer_key):
     answer_key_contours = get_answer_key_contours(answer_key)
     correct, items = 0, 0
     for img in answer:
+        correct, items = 0, 0
         for c in answer_key_contours:
             x, y, w, h = cv.boundingRect(c)
             BGR = np.array(
@@ -20,10 +21,20 @@ def test_checker(answer, answer_key):
                              (x, y), (x+w, y+h), (0, 0, 255), 2)
             items += 1
         print(f"Total Score: {correct}, out of {items}")
+
         # Resize image
         imS = cv.resize(img, (800, 940))
-        cv.imshow("outsput", imS)
+        average = int(items*0.75)
+        print(average)
+        if correct < average:
+            cv.putText(imS, str(correct), (600,140), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
+        else: 
+            cv.putText(imS, str(correct), (600,140), cv.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+        cv.putText(imS, "__", (600,145), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 2)
+        cv.putText(imS, str(items), (600,175), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 2)
+        cv.imshow("outsput",imS)
 
+    
     cv.waitKey(0)
 
 
@@ -66,6 +77,7 @@ def preprocess_image(answer_key):
 def load_images():
     collected_answer_sheets = []
     collected_answer_key = []
+
     for filename in os.listdir("Answer Key"):
         image = cv.imread(os.path.join("Answer Key", filename))
         if image is not None:
@@ -77,6 +89,7 @@ def load_images():
             collected_answer_sheets.append(image)
 
     return collected_answer_sheets, collected_answer_key
+
 
 
 answer_sheets, answer_key = load_images()
