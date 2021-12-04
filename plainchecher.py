@@ -5,6 +5,7 @@ import os
 
 def test_checker(answer, answer_key):
     answer_key_contours = get_answer_key_contours(answer_key)
+    n = 0
     for img in answer:
         correct, items = 0, 0
         for c in answer_key_contours:
@@ -34,7 +35,8 @@ def test_checker(answer, answer_key):
                    cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
         cv.putText(imS, str(items), (600, 175),
                    cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
-        cv.imshow("outsput", imS)
+        cv.imshow("outsput" + str(n), imS)
+        n = n + 1
 
     cv.waitKey(0)
 

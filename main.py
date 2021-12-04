@@ -44,8 +44,8 @@ button.place(x=780, y=610)
 
 header = Label(gui, text = "Automated Test Checker", bg = 'white', fg='#536DFE', font=("Century Gothic", 25, "bold")).place(x = 635, y = 60)
 
-select_folder = Label(gui, text = "Browse Folder", bg = 'white', fg='#2F2E41', font=("Century Gothic", 14, "bold")).place(x = 625, y = 160)
-ans_key = Label(gui, text = "Select Answer Sheets", bg = 'white', fg='#2F2E41', font=("Century Gothic", 14, "bold")).place(x = 625, y = 240)
+select_folder = Label(gui, text = "Browse Answer Sheets Folder", bg = 'white', fg='#2F2E41', font=("Century Gothic", 14, "bold")).place(x = 625, y = 160)
+ans_key = Label(gui, text = "Select Answer Key", bg = 'white', fg='#2F2E41', font=("Century Gothic", 14, "bold")).place(x = 625, y = 240)
 
 #button for selecting directory
 button_select = Button(gui, text = 'Browse', bg='#536DFE', fg='white', activebackground='#F2F2F2', command = click)  
