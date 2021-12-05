@@ -12,7 +12,7 @@ def test_checker(answer, answer_key):
             x, y, w, h = cv.boundingRect(c)
             BGR = np.array(
                 cv.mean(img[y:y+h, x:x+w])).astype(np.uint8)
-            if BGR[0] < 100:
+            if BGR[0] < 150:
                 cv.rectangle(img,
                              (x, y), (x+w, y+h), (0, 255, 0), 2)
                 correct += 1
@@ -20,25 +20,27 @@ def test_checker(answer, answer_key):
                 cv.rectangle(img,
                              (x, y), (x+w, y+h), (0, 0, 255), 2)
             items += 1
-        print(f"Total Score: {correct}, out of {items}")
-
         # Resize image
         imS = cv.resize(img, (800, 940))
-        average = int(items*0.75)
-        if correct < average:
-            cv.putText(imS, str(correct), (600, 140),
-                       cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-        else:
-            cv.putText(imS, str(correct), (600, 140),
-                       cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-        cv.putText(imS, "__", (600, 145),
-                   cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
-        cv.putText(imS, str(items), (600, 175),
-                   cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
-        cv.imshow("outsput" + str(n), imS)
+        plot_score(imS, correct, items, n)
         n = n + 1
 
     cv.waitKey(0)
+
+
+def plot_score(imS, correct, items, n):
+    average = int(items*0.75)
+    if correct < average:
+        cv.putText(imS, str(correct), (600, 140),
+                   cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    else:
+        cv.putText(imS, str(correct), (600, 140),
+                   cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+    cv.putText(imS, "__", (600, 145),
+               cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
+    cv.putText(imS, str(items), (600, 175),
+               cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
+    cv.imshow("outsput" + str(n), imS)
 
 
 def get_answer_key_contours(answer_key):
@@ -54,7 +56,10 @@ def get_answer_key_contours(answer_key):
             if w > 40 and h > 30:
                 BGR = np.array(
                     cv.mean(original_key[0][y:y+h, x:x+w])).astype(np.uint8)
-                if BGR[0] < 100:
+                print(BGR)
+                cv.putText(original_key[0], "a", (x, y),
+                           cv.FONT_HERSHEY_SIMPLEX, 4, (0, 0, 255), 2)
+                if BGR[0] < 150:
                     cv.rectangle(original_key[0],
                                  (x, y), (x+w, y+h), (0, 255, 0), 2)
                     answer_key_contours.append(c)
@@ -88,8 +93,9 @@ def load_images():
 
     for filename in os.listdir("Answer Sheets"):
         image = cv.imread(os.path.join("Answer Sheets", filename))
+        resizedimage = cv.resize(image, (1200, 1500))
         if image is not None:
-            collected_answer_sheets.append(image)
+            collected_answer_sheets.append(resizedimage)
 
     return collected_answer_sheets, collected_answer_key
 
