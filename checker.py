@@ -2,9 +2,13 @@ import cv2 as cv
 import numpy as np
 import os
 
+original_answer_key_image = []
 
-def test_checker(answer, answer_key, original_key):
-    answer_key_contours = get_answer_key_contours(answer_key, original_key)
+
+def test_checker(answer, answer_key):
+    global original_answer_key_image
+    answer_key_contours = get_answer_key_contours(
+        answer_key, original_answer_key_image)
     n = 0
     for img in answer:
         correct, items = 0, 0
@@ -45,59 +49,49 @@ def plot_score(imS, correct, items, n):
 
 def get_answer_key_contours(answer_key, original_key):
     answer_key_contours = []
-    for img in answer_key:
-        thresh = cv.threshold(img, 100, 255,
-                              cv.THRESH_OTSU)[1]
-        cnts, _ = cv.findContours(thresh, cv.RETR_EXTERNAL,
-                                  cv.CHAIN_APPROX_SIMPLE)
-        for c in cnts:
-            x, y, w, h = cv.boundingRect(c)
-            if w > 40 and h > 30:
-                BGR = np.array(
-                    cv.mean(original_key[0][y:y+h, x:x+w])).astype(np.uint8)
-                print(BGR)
-                cv.putText(original_key[0], "a", (x, y),
-                           cv.FONT_HERSHEY_SIMPLEX, 4, (0, 0, 255), 2)
-                if BGR[0] < 150:
-                    cv.rectangle(original_key[0],
-                                 (x, y), (x+w, y+h), (0, 255, 0), 2)
-                    answer_key_contours.append(c)
-        # Resize image
-        imS = cv.resize(original_key[0], (800, 940))
-        cv.imshow("output", imS)
+
+    thresh = cv.threshold(answer_key, 100, 255,
+                          cv.THRESH_OTSU)[1]
+    cnts, _ = cv.findContours(thresh, cv.RETR_EXTERNAL,
+                              cv.CHAIN_APPROX_SIMPLE)
+    for c in cnts:
+        x, y, w, h = cv.boundingRect(c)
+        if w > 40 and h > 30:
+            BGR = np.array(
+                cv.mean(original_key[y:y+h, x:x+w])).astype(np.uint8)
+            if BGR[0] < 150:
+                cv.rectangle(original_key,
+                             (x, y), (x+w, y+h), (0, 255, 0), 2)
+                answer_key_contours.append(c)
+    # Resize image
+    imS = cv.resize(original_key, (800, 940))
+    cv.imshow("output", imS)
 
     return answer_key_contours
 
 
 def preprocess_image(answer_key):
-    preprocessed_answer_key = []
 
-    for img in answer_key:
-        gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-        blurred = cv.GaussianBlur(gray, (5, 5), 0)
-        edged = cv.Canny(blurred, 75, 200)
-        preprocessed_answer_key.append(edged)
+    gray = cv.cvtColor(answer_key, cv.COLOR_BGR2GRAY)
+    blurred = cv.GaussianBlur(gray, (5, 5), 0)
+    edged = cv.Canny(blurred, 75, 200)
 
-    return preprocessed_answer_key
+    return edged
 
 
-def load_images():
+def load_images(answer_sheet_path, answer_key_path):
+    global original_answer_key_image
     collected_answer_sheets = []
-    collected_answer_key = []
 
-    for filename in os.listdir("Answer Key"):
-        image = cv.imread(os.path.join("Answer Key", filename))
-        original_key = image
-        if image is not None:
-            collected_answer_key.append(image)
-
-    for filename in os.listdir("Answer Sheets"):
-        image = cv.imread(os.path.join("Answer Sheets", filename))
+    answer_key = cv.imread(answer_key_path)
+    original_answer_key_image = answer_key
+    for filename in os.listdir(answer_sheet_path):
+        image = cv.imread(os.path.join(answer_sheet_path, filename))
         resizedimage = cv.resize(image, (1200, 1500))
         if image is not None:
             collected_answer_sheets.append(resizedimage)
 
-    return collected_answer_sheets, collected_answer_key
+    return collected_answer_sheets, answer_key
 
 
 """answer_sheets, answer_key = load_images()

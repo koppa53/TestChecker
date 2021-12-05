@@ -6,25 +6,32 @@ import tkinter
 import checker
 
 # set directory
+sheet_path, key_path = "", ""
 
 
 def click():
-    path = filedialog.askdirectory()
-    sample_text1.insert(END, path)
+    global sheet_path
+    answer_sheet_path = filedialog.askdirectory()
+    sheet_path = answer_sheet_path
+    answer_sheet_file_path.insert(END, answer_sheet_path)
 
 # set answer sheet
 
 
 def click_ans():
-    filepath = filedialog.askopenfilename()
-    sample_text2.insert(END, filepath)
+    global key_path
+    answer_key_path = filedialog.askopenfilename()
+    key_path = answer_key_path
+    answer_key_file_path.insert(END, answer_key_path)
 
 
 def check():
-    answer_sheets, answer_key = checker.load_images()
-    original_key = answer_key
-    processed_answer_key = checker.preprocess_image(answer_key)
-    checker.test_checker(answer_sheets, processed_answer_key, original_key)
+    global sheet_path, key_path
+    answer_sheets_images, answer_key_image = checker.load_images(
+        sheet_path, key_path)
+    processed_answer_key = checker.preprocess_image(answer_key_image)
+    checker.test_checker(answer_sheets_images,
+                         processed_answer_key)
 
 
 gui = Tk()
@@ -92,22 +99,22 @@ percentage = Label(gui, text="98%", bg='white', fg='#536DFE', font=(
     "Century Gothic", 14, "bold")).place(x=750, y=420)
 
 # text field for directory
-sample_text1 = tkinter.Text(gui, height=1, width=31, bg='#E5E5E5')
-sample_text1.pack()
+answer_sheet_file_path = tkinter.Text(gui, height=1, width=31, bg='#E5E5E5')
+answer_sheet_file_path.pack()
 
-sample_text1.place(x=630, y=200)
+answer_sheet_file_path.place(x=630, y=200)
 
 Font_tuple1 = ("Century Gothic", 14, "bold")
-sample_text1.configure(font=Font_tuple1)
+answer_sheet_file_path.configure(font=Font_tuple1)
 
 # text field for answer sheet
-sample_text2 = tkinter.Text(gui, height=1, width=31, bg='#E5E5E5')
-sample_text2.pack()
+answer_key_file_path = tkinter.Text(gui, height=1, width=31, bg='#E5E5E5')
+answer_key_file_path.pack()
 
-sample_text2.place(x=630, y=280)
+answer_key_file_path.place(x=630, y=280)
 
 Font_tuple2 = ("Century Gothic", 14, "bold")
-sample_text2.configure(font=Font_tuple2)
+answer_key_file_path.configure(font=Font_tuple2)
 
 # set window color
 gui['bg'] = 'white'
