@@ -3,6 +3,7 @@ import numpy as np
 import os
 
 original_answer_key_image = []
+original_answer_sheet_image = []
 
 
 def test_checker(answer, answer_key):
@@ -70,27 +71,37 @@ def get_answer_key_contours(answer_key, original_key):
     return answer_key_contours
 
 
-def preprocess_image(answer_key):
+def preprocess_image(answer_sheets, answer_key):
+
+    processed_answer_sheets = []
 
     gray = cv.cvtColor(answer_key, cv.COLOR_BGR2GRAY)
     blurred = cv.GaussianBlur(gray, (5, 5), 0)
-    edged = cv.Canny(blurred, 75, 200)
+    processed_answer_key = cv.Canny(blurred, 75, 200)
 
-    return edged
+    for img in answer_sheets:
+        g = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+        b = cv.GaussianBlur(g, (5, 5), 0)
+        e = cv.Canny(b, 75, 200)
+        processed_answer_sheets.append(e)
+
+    return processed_answer_sheets, processed_answer_key
 
 
 def load_images(answer_sheet_path, answer_key_path):
-    global original_answer_key_image
+    global original_answer_key_image, original_answer_sheet_image
     collected_answer_sheets = []
 
     answer_key = cv.imread(answer_key_path)
     original_answer_key_image = answer_key
+
     for filename in os.listdir(answer_sheet_path):
         image = cv.imread(os.path.join(answer_sheet_path, filename))
         resizedimage = cv.resize(image, (1200, 1500))
         if image is not None:
             collected_answer_sheets.append(resizedimage)
 
+    original_answer_sheet_image = collected_answer_sheets
     return collected_answer_sheets, answer_key
 
 
