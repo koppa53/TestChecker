@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter import font
 from PIL import ImageTk, Image
+from tkinter import messagebox
 import tkinter
 import checker
 
@@ -11,6 +12,7 @@ sheet_path, key_path = "", ""
 
 def click():
     global sheet_path
+    answer_sheet_file_path.delete(1.0, END)
     answer_sheet_path = filedialog.askdirectory()
     sheet_path = answer_sheet_path
     answer_sheet_file_path.insert(END, answer_sheet_path)
@@ -20,6 +22,7 @@ def click():
 
 def click_ans():
     global key_path
+    answer_key_file_path.delete(1.0, END)
     answer_key_path = filedialog.askopenfilename()
     key_path = answer_key_path
     answer_key_file_path.insert(END, answer_key_path)
@@ -27,6 +30,8 @@ def click_ans():
 
 def check():
     global sheet_path, key_path
+    if(sheet_path == "" or key_path == ""):
+        messagebox.showinfo("Information", "Select Required Folder/File",)
     answer_sheets_images, answer_key_image = checker.load_images(
         sheet_path, key_path)
     processed_answer_key = checker.preprocess_image(answer_key_image)
