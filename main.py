@@ -7,7 +7,17 @@ import tkinter
 import checker
 
 # set directory
-sheet_path, key_path, items = "", "", 0
+sheet_path, key_path, paper = "", "", 0
+
+gui = Tk()
+# set window size
+gui.geometry("1100x720")
+gui.title('Automated Test Checker 1.0')
+gui.resizable(False, False)
+
+
+my_string_var = StringVar()
+my_string_var.set("None")
 
 
 def click():
@@ -29,24 +39,27 @@ def click_ans():
 
 
 def check():
-    global sheet_path, key_path, items
-    if(sheet_path == "" or key_path == ""):
-        messagebox.showinfo("Information", "Select Required Folder/File",)
+    global sheet_path, key_path, paper
+    if(sheet_path == "" and key_path == ""):
+        messagebox.showerror("Error", "Choose Folder and/or File",)
+    elif(sheet_path == ""):
+        messagebox.showinfo("Information", "Select Required Folder",)
+    elif(key_path == ""):
+        messagebox.showinfo("Information", "Select Required File",)
     else:
-        answer_sheets_images, answer_key_image = checker.load_images(
-            sheet_path, key_path)
-        items = len(answer_sheets_images)
-        processed_answer_sheets, processed_answer_key = checker.preprocess_image(
-            answer_sheets_images, answer_key_image)
-        checker.test_checker(processed_answer_sheets,
-                             processed_answer_key)
+        process(sheet_path, key_path, paper)
 
 
-gui = Tk()
-# set window size
-gui.geometry("1100x720")
-gui.title('Test Checker 1.0')
-gui.resizable(False, False)
+def process(sheet_path, key_path, paper):
+    answer_sheets_images, answer_key_image = checker.load_images(
+        sheet_path, key_path)
+    paper = len(answer_sheets_images)
+    my_string_var.set(str(paper))
+    processed_answer_sheets, processed_answer_key = checker.preprocess_image(
+        answer_sheets_images, answer_key_image)
+    checker.test_checker(processed_answer_sheets,
+                         processed_answer_key)
+
 
 photo = PhotoImage(file="testchecker.png")
 gui.iconphoto(False, photo)
@@ -96,14 +109,15 @@ select_ans.place(x=990, y=275)
 
 paper_total = Label(gui, text="Total Papers Checked:", bg='white', fg='#2F2E41', font=(
     "Century Gothic", 14, "bold")).place(x=625, y=380)
+
 # note placeholder text
-ans_sheets = Label(gui, text=items, bg='white', fg='#536DFE', font=(
+ans_sheets = Label(gui, textvariable=my_string_var, bg='white', fg='#536DFE', font=(
     "Century Gothic", 14, "bold")).place(x=840, y=380)
 
 passing_rate = Label(gui, text="Passing Rate:", bg='white', fg='#2F2E41', font=(
     "Century Gothic", 14, "bold")).place(x=625, y=420)
 # note placeholder text
-percentage = Label(gui, text="98%", bg='white', fg='#536DFE', font=(
+percentage = Label(gui, text="None", bg='white', fg='#536DFE', font=(
     "Century Gothic", 14, "bold")).place(x=750, y=420)
 
 # text field for directory
