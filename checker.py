@@ -6,12 +6,14 @@ original_answer_key_image = []
 original_answer_sheet_image = []
 
 
-def test_checker(answer, answer_key):
-    global original_answer_key_image
+def test_checker(answer, processed_answer_key):
+    global original_answer_key_image, original_answer_sheet_image
     answer_key_contours = get_answer_key_contours(
-        answer_key, original_answer_key_image)
+        processed_answer_key, original_answer_key_image)
+    answer_sheet_contours = get_answer_sheet_contours(
+        answer, original_answer_sheet_image)
     n = 0
-    for img in answer:
+    """ for img in answer:
         correct, items = 0, 0
         for c in answer_key_contours:
             x, y, w, h = cv.boundingRect(c)
@@ -26,9 +28,9 @@ def test_checker(answer, answer_key):
                              (x, y), (x+w, y+h), (0, 0, 255), 2)
             items += 1
         # Resize image
-        imS = cv.resize(img, (800, 940))
-        plot_score(imS, correct, items, n)
-        n = n + 1
+        imS = cv.resize(img, (800, 940))"""
+    # plot_score(imS, correct, items, n)
+    """n = n + 1"""
 
     cv.waitKey(0)
 
@@ -46,6 +48,34 @@ def plot_score(imS, correct, items, n):
     cv.putText(imS, str(items), (600, 175),
                cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
     cv.imshow("outsput" + str(n), imS)
+
+
+def get_answer_sheet_contours(answer_sheet, original_sheet_image):
+    answer_sheet_contours = []
+    n = 0
+    for img in answer_sheet:
+        thresh = cv.threshold(img, 100, 255,
+                              cv.THRESH_OTSU)[1]
+        cnts, _ = cv.findContours(thresh, cv.RETR_EXTERNAL,
+                                  cv.CHAIN_APPROX_SIMPLE)
+        for c in cnts:
+            x, y, w, h = cv.boundingRect(c)
+            if w > 40 and w < 100 and h > 30 and h < 43:
+                # if w > 40 and w < 150 and h < 50 and h > 35:
+                BGR = np.array(
+                    cv.mean(original_sheet_image[n][y:y+h, x:x+w])).astype(np.uint8)
+                print(w, h, n)
+                if BGR[0] < 210:
+                    cv.rectangle(original_sheet_image[n],
+                                 (x, y), (x+w, y+h), (0, 255, 0), 2)
+                    answer_sheet_contours.append(c)
+        # Resize image
+        imS = cv.resize(original_sheet_image[n], (800, 940))
+        cv.imshow("outputs"+str(n), imS)
+        #cv.imshow("outputs"+str(n), thresh)
+        n = n+1
+
+    return answer_sheet_contours
 
 
 def get_answer_key_contours(answer_key, original_key):

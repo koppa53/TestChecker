@@ -38,7 +38,7 @@ def check():
         items = len(answer_sheets_images)
         processed_answer_sheets, processed_answer_key = checker.preprocess_image(
             answer_sheets_images, answer_key_image)
-        checker.test_checker(answer_sheets_images,
+        checker.test_checker(processed_answer_sheets,
                              processed_answer_key)
 
 
