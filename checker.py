@@ -3,8 +3,8 @@ import numpy as np
 import os
 
 
-def test_checker(answer, answer_key):
-    answer_key_contours = get_answer_key_contours(answer_key)
+def test_checker(answer, answer_key, original_key):
+    answer_key_contours = get_answer_key_contours(answer_key, original_key)
     n = 0
     for img in answer:
         correct, items = 0, 0
@@ -43,8 +43,7 @@ def plot_score(imS, correct, items, n):
     cv.imshow("outsput" + str(n), imS)
 
 
-def get_answer_key_contours(answer_key):
-    global original_key
+def get_answer_key_contours(answer_key, original_key):
     answer_key_contours = []
     for img in answer_key:
         thresh = cv.threshold(img, 100, 255,
@@ -88,6 +87,7 @@ def load_images():
 
     for filename in os.listdir("Answer Key"):
         image = cv.imread(os.path.join("Answer Key", filename))
+        original_key = image
         if image is not None:
             collected_answer_key.append(image)
 
@@ -100,7 +100,6 @@ def load_images():
     return collected_answer_sheets, collected_answer_key
 
 
-answer_sheets, answer_key = load_images()
-original_key = answer_key
+"""answer_sheets, answer_key = load_images()
 answer_key = preprocess_image(answer_key)
-test_checker(answer_sheets, answer_key)
+test_checker(answer_sheets, answer_key)"""
