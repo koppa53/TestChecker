@@ -10,7 +10,7 @@ def test_checker(answer, processed_answer_key):
     global original_answer_key_image, original_answer_sheet_image
     answer_key_contours = get_answer_key_contours(
         processed_answer_key, original_answer_key_image)
-    answer_sheet_contours = get_answer_sheet_contours(
+    get_answer_sheet_scores(
         answer, original_answer_sheet_image, answer_key_contours)
 
 
@@ -35,7 +35,7 @@ def get_contour_precedence(contour, cols):
     return ((origin[1] // tolerance_factor) * tolerance_factor) * cols + origin[0]
 
 
-def get_answer_sheet_contours(answer_sheet, original_sheet_image, correct_answers):
+def get_answer_sheet_scores(answer_sheet, original_sheet_image, correct_answers):
     answer_sheet_contours = []
     all_contours = []
     n = 0

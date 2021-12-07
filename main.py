@@ -11,7 +11,7 @@ sheet_path, key_path, paper = "", "", 0
 
 gui = Tk()
 # set window size
-gui.geometry("1100x720")
+gui.geometry("1200x720")
 gui.title('Automated Test Checker 1.0')
 gui.resizable(False, False)
 
