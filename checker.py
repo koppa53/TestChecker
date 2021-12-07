@@ -138,7 +138,7 @@ def preprocess_image(answer_sheets, answer_key):
     for img in answer_sheets:
         g = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
         b = cv.GaussianBlur(g, (5, 5), 0)
-        e = cv.Canny(b, 50, 150)
+        e = cv.Canny(b, 75, 150)
         processed_answer_sheets.append(e)
 
     return processed_answer_sheets, processed_answer_key
@@ -161,9 +161,9 @@ def load_images(answer_sheet_path, answer_key_path):
     return collected_answer_sheets, answer_key
 
 
-"""answer_sheets, answer_key = load_images(
+answer_sheets, answer_key = load_images(
     "D:/Documents/Python Projects/TestChecker/Answer Sheets", "D:/Documents/Python Projects/TestChecker/Answer Key/1.png")
 processed_answer_sheets, processed_answer_key = preprocess_image(
     answer_sheets, answer_key)
-test_checker(processed_answer_sheets, processed_answer_key)"""
+test_checker(processed_answer_sheets, processed_answer_key)
 cv.waitKey(0)
