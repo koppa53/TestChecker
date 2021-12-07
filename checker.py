@@ -40,7 +40,9 @@ def get_answer_sheet_scores(answer_sheet, original_sheet_image, correct_answers)
     all_contours = []
     n = 0
     a = 0
+    items = len(correct_answers)
     for img in answer_sheet:
+        correct = 0
         answer_sheet_contours = []
         thresh = cv.threshold(img, 100, 255,
                               cv.THRESH_OTSU)[1]
@@ -48,7 +50,7 @@ def get_answer_sheet_scores(answer_sheet, original_sheet_image, correct_answers)
                                   cv.CHAIN_APPROX_SIMPLE)
         for c in cnts:
             x, y, w, h = cv.boundingRect(c)
-            if w > 40 and w < 100 and h > 30:
+            if w > 40 and w < 100 and h > 30 and h < 43:
                 # cv.putText(original_sheet_image[n], str(a), (x, y),
                 #           cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
                 # BGR = np.array(
@@ -63,20 +65,23 @@ def get_answer_sheet_scores(answer_sheet, original_sheet_image, correct_answers)
         for i in range(len(answer_sheet_contours)):
             x, y, w, h = cv.boundingRect(answer_sheet_contours[i])
             imS = cv.putText(original_sheet_image[n], str(i), (x, y),
-                             cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
+                             cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
             BGR = np.array(
                 cv.mean(original_sheet_image[n][y:y+h, x:x+w])).astype(np.uint8)
             if BGR[0] < 210:
                 if i in correct_answers:
                     cv.rectangle(original_sheet_image[n],
                                  (x, y), (x+w, y+h), (0, 255, 0), 2)
+                    correct += 1
                 else:
                     cv.rectangle(original_sheet_image[n],
                                  (x, y), (x+w, y+h), (0, 0, 255), 2)
         # Resize image
         imS = cv.resize(original_sheet_image[n], (800, 940))
-        cv.imshow("outputs"+str(n), imS)
-        #cv.imshow("outputs"+str(n), thresh)
+        plot_score(imS, correct, items, n)
+        #cv.imshow("outputs"+str(n), imS)
+        cv.imshow("outputs"+str(n),
+                  cv.resize(thresh, (800, 940)))
         all_contours.append(answer_sheet_contours)
         n = n+1
 
@@ -107,8 +112,8 @@ def get_answer_key_contours(answer_key, original_key):
     imS = cv.resize(original_key, (800, 940))
     for i in range(len(answer_key_contours)):
         x, y, w, h = cv.boundingRect(answer_key_contours[i])
-        imS = cv.putText(original_key, str(i), (x, y),
-                         cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
+        # imS = cv.putText(original_key, str(i), (x, y),
+        #                 cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
         BGRs = np.array(
             cv.mean(original_key[y:y+h, x:x+w])).astype(np.uint8)
         if BGRs[0] < 210:
@@ -116,7 +121,6 @@ def get_answer_key_contours(answer_key, original_key):
             #           cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
             correct_answers.append(i)
     # Resize image
-    print(correct_answers)
     imS = cv.resize(imS, (800, 940))
     cv.imshow("output", imS)
 
@@ -134,7 +138,7 @@ def preprocess_image(answer_sheets, answer_key):
     for img in answer_sheets:
         g = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
         b = cv.GaussianBlur(g, (5, 5), 0)
-        e = cv.Canny(b, 75, 200)
+        e = cv.Canny(b, 50, 150)
         processed_answer_sheets.append(e)
 
     return processed_answer_sheets, processed_answer_key
