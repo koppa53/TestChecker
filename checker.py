@@ -342,9 +342,9 @@ def getPassing():
     passing = (passed_students / number_of_students) * 100
     return passing
 
-answer_sheets, answer_key = load_images(
-    "C:/Users/tlust/Desktop/TestChecker_2/TestChecker/Answer Sheets", "C:/Users/tlust/Desktop/TestChecker_2/TestChecker/Answer Key/1.png")
-processed_answer_sheets, processed_answer_key = preprocess_image(
-    answer_sheets, answer_key)
-test_checker(processed_answer_sheets, processed_answer_key)
+# answer_sheets, answer_key = load_images(
+#     "C:/Users/tlust/Desktop/TestChecker_2/TestChecker/Answer Sheets", "C:/Users/tlust/Desktop/TestChecker_2/TestChecker/Answer Key/1.png")
+# processed_answer_sheets, processed_answer_key = preprocess_image(
+#     answer_sheets, answer_key)
+# test_checker(processed_answer_sheets, processed_answer_key)
 cv.waitKey(0)

@@ -20,6 +20,9 @@ my_string_var = StringVar()
 my_string_var.set("None")
 passing = 0
 
+passing_var = StringVar()
+my_string_var.set("None")
+
 def click():
     global sheet_path
     answer_sheet_file_path.delete(1.0, END)
@@ -61,13 +64,7 @@ def process(sheet_path, key_path, paper):
     checker.test_checker(processed_answer_sheets,
                          processed_answer_key)
     passing = checker.getPassing()
-    
-    passing_rate = Label(gui, text="Passing Rate:", bg='white', fg='#2F2E41', font=(
-    "Century Gothic", 14, "bold")).place(x=625, y=420)
-    # note placeholder text
-    percentage = Label(gui, text="None", bg='white', fg='#536DFE', font=(
-        "Century Gothic", 14, "bold")).place(x=750, y=420)
-
+    passing_var.set(str(passing) + "%")
 
 photo = PhotoImage(file="testchecker.png")
 gui.iconphoto(False, photo)
@@ -125,7 +122,7 @@ ans_sheets = Label(gui, textvariable=my_string_var, bg='white', fg='#536DFE', fo
 passing_rate = Label(gui, text="Passing Rate:", bg='white', fg='#2F2E41', font=(
     "Century Gothic", 14, "bold")).place(x=625, y=420)
 # note placeholder text
-percentage = Label(gui, text="None", bg='white', fg='#536DFE', font=(
+percentage = Label(gui, textvariable=passing_var, bg='white', fg='#536DFE', font=(
     "Century Gothic", 14, "bold")).place(x=750, y=420)
 
 # text field for directory

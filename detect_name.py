@@ -131,7 +131,6 @@ def name_detection(cover_image):
 
     #cv.imshow("images", threshold)
 
-    print(content)
 
     for i in range(total_length):
         if int(float(content["conf"][i])) > 30:
