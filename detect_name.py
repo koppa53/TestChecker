@@ -1,5 +1,6 @@
 #from tensorflow.keras.models import load_model
 #from imutils.contours import sort_contours
+from os import name
 import numpy as np
 import argparse
 import imutils
@@ -104,23 +105,21 @@ import pytesseract as pyt
     cv.waitKey(0)
 """
 
-
-def name_detection(image_path):
-    cover_image = cv.imread(image_path)
-    x = 360
+def name_detection(cover_image):
+    x = 110
     y = 0
-    h = 300
-    w = 900
+    h = 112
+    w = 300 
     image = cover_image[y:y+h, x:x+w]
-    scale_percent = 100  # percent of original size
+
+    """scale_percent = 100  # percent of original size
     width = int(image.shape[1] * scale_percent / 100)
     height = int(image.shape[0] * scale_percent / 100)
-    dim = (width, height)
-    resized = cv.resize(image, dim, interpolation=cv.INTER_AREA)
-
+    dim = (width, height)"""
+    
     pyt.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
-    grayscale = cv.cvtColor(resized, cv.COLOR_BGR2GRAY)
+    grayscale = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
 
     threshold = cv.threshold(grayscale, 0, 255, cv.THRESH_OTSU)[1]
 
@@ -130,19 +129,19 @@ def name_detection(image_path):
         threshold, output_type=pyt.Output.DICT, config=configure)
     total_length = len(content["text"])
 
+    #cv.imshow("images", threshold)
+
+    print(content)
+
     for i in range(total_length):
         if int(float(content["conf"][i])) > 30:
             x, y, w, h = (content["left"][i], content["top"]
-                          [i], content["width"][i], content["height"][i])
-            resized = cv.rectangle(
-                resized, (x, y), ((x+w), (y+h)), (0, 255, 0), 2)
+                        [i], content["width"][i], content["height"][i])
+            #image = cv.rectangle(image, (x, y), ((x+w), (y+h)), (0, 255, 0), 2)
 
+    fullName = ""
     for j in content["text"]:
         if(j != ""):
-            print(j)
+            fullName = fullName + " " + j
 
-    cv.imshow("image", resized)
-    cv.waitKey(0)
-
-
-name_detection("Answer Sheets/james_harden.jpg")
+    return fullName

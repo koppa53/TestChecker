@@ -18,7 +18,7 @@ gui.resizable(False, False)
 
 my_string_var = StringVar()
 my_string_var.set("None")
-
+passing = 0
 
 def click():
     global sheet_path
@@ -51,6 +51,7 @@ def check():
 
 
 def process(sheet_path, key_path, paper):
+    global passing
     answer_sheets_images, answer_key_image = checker.load_images(
         sheet_path, key_path)
     paper = len(answer_sheets_images)
@@ -59,6 +60,13 @@ def process(sheet_path, key_path, paper):
         answer_sheets_images, answer_key_image)
     checker.test_checker(processed_answer_sheets,
                          processed_answer_key)
+    passing = checker.getPassing()
+    
+    passing_rate = Label(gui, text="Passing Rate:", bg='white', fg='#2F2E41', font=(
+    "Century Gothic", 14, "bold")).place(x=625, y=420)
+    # note placeholder text
+    percentage = Label(gui, text="None", bg='white', fg='#536DFE', font=(
+        "Century Gothic", 14, "bold")).place(x=750, y=420)
 
 
 photo = PhotoImage(file="testchecker.png")
