@@ -108,7 +108,7 @@ import pytesseract as pyt
 def name_detection(cover_image):
     x = 110
     y = 0
-    h = 112
+    h = 115
     w = 300 
     image = cover_image[y:y+h, x:x+w]
 
@@ -136,11 +136,13 @@ def name_detection(cover_image):
         if int(float(content["conf"][i])) > 30:
             x, y, w, h = (content["left"][i], content["top"]
                         [i], content["width"][i], content["height"][i])
-            #image = cv.rectangle(image, (x, y), ((x+w), (y+h)), (0, 255, 0), 2)
+            image = cv.rectangle(image, (x, y), ((x+w), (y+h)), (0, 255, 0), 2)
 
     fullName = ""
     for j in content["text"]:
         if(j != ""):
             fullName = fullName + " " + j
-
+    
+    cv.imshow("cropped",image)
+    print(fullName)
     return fullName

@@ -344,7 +344,7 @@ def getPassing():
     global original_answer_sheet_image, passed
     number_of_students = len(original_answer_sheet_image)
     passed_students = passed
-    passing = (passed_students / number_of_students) * 100
+    passing = round((passed_students / number_of_students) * 100, 2)
     return passing
 
 
