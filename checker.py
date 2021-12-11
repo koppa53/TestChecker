@@ -11,12 +11,13 @@ import cv2 as cv
 import numpy as np
 import os
 import detect_name
-from datetime import date
+from datetime import datetime
 
 original_answer_key_image = []
 original_answer_sheet_image = []
 totalScores = 0
 passed = 0
+
 
 def load_images(answer_sheet_path, answer_key_path):
     """
@@ -282,8 +283,8 @@ def check_shaded(contours, original_image, correct_answers, x_coord, y_coord):
         x = x + x_coord
         y = y + y_coord
         checked_image = original_image
-        #cv.putText(checked_image, str(i), (x, y),
-                   #cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
+        # cv.putText(checked_image, str(i), (x, y),
+        # cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
         BGR = np.array(
             cv.mean(checked_image[y:y+h, x:x+w])).astype(np.uint8)
         if BGR[0] < 210:
@@ -308,6 +309,8 @@ def plot_score(imS, correct, items, n):
         Using putText() function.
     """
     global passed
+    current_directory = os.getcwd()
+    now = datetime.now()
 
     average = int(items*0.75)
     if correct < average:
@@ -321,17 +324,19 @@ def plot_score(imS, correct, items, n):
                cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
     cv.putText(imS, str(items), (600, 175),
                cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
-    
-    # detect_name here
+
     fullName = detect_name.name_detection(imS)
+    dt_string = now.strftime("%d-%m-%Y_%H-%M-%S")
     #cv.putText(imS,fullName, (200, 120),cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
 
-    with open('scores with name.txt', 'a') as the_file:
-        the_file.write(fullName + " - " + str(correct) + "\n")
-    
-    path = "C:/Users/tlust/Desktop/TestChecker_2/TestChecker/Results"
-    
-    cv.imwrite(os.path.join(path,f'result{n}.jpg'),imS)
+    with open('ScoreSheet.txt', 'a') as the_file:
+        the_file.write(str(n+1)+". "+fullName + " - " + str(correct) +
+                       ", " + dt_string + "\n")
+
+    save_path = current_directory + r"\Results"
+    print(save_path)
+    cv.imwrite(os.path.join(
+        save_path, f'{fullName}_CHKD_{dt_string}.jpg'), imS)
     cv.imshow("outsput" + str(n), imS)
 
 
@@ -341,6 +346,7 @@ def getPassing():
     passed_students = passed
     passing = (passed_students / number_of_students) * 100
     return passing
+
 
 # answer_sheets, answer_key = load_images(
 #     "C:/Users/tlust/Desktop/TestChecker_2/TestChecker/Answer Sheets", "C:/Users/tlust/Desktop/TestChecker_2/TestChecker/Answer Key/1.png")

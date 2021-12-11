@@ -23,6 +23,7 @@ passing = 0
 passing_var = StringVar()
 my_string_var.set("None")
 
+
 def click():
     global sheet_path
     answer_sheet_file_path.delete(1.0, END)
@@ -65,6 +66,7 @@ def process(sheet_path, key_path, paper):
                          processed_answer_key)
     passing = checker.getPassing()
     passing_var.set(str(passing) + "%")
+
 
 photo = PhotoImage(file="testchecker.png")
 gui.iconphoto(False, photo)
