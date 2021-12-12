@@ -97,7 +97,7 @@ def test_checker(processed_answer_sheet, processed_answer_key):
         secCol = crop_image(
             processed_answer_sheet[i], 450, 300, processed_answer_sheet[i].shape[1], 300)
         thirdCol = crop_image(
-            processed_answer_sheet[i], 820, 300, processed_answer_sheet[i].shape[1], 300)
+            processed_answer_sheet[i], 820, 310, processed_answer_sheet[i].shape[1], 310)
 
         process_1, correct_answers = check_answer_sheet(
             firstCol, original_answer_sheet_image[i], correct_answers_list[0], 80, 300)
@@ -106,7 +106,7 @@ def test_checker(processed_answer_sheet, processed_answer_key):
             secCol, original_answer_sheet_image[i], correct_answers_list[1], 450, 300)
         final_process = process_2
         final_process, correct_answers3 = check_answer_sheet(
-            thirdCol, original_answer_sheet_image[i], correct_answers_list[2], 820, 300)
+            thirdCol, original_answer_sheet_image[i], correct_answers_list[2], 820, 310)
 
         plot_score(
             cv.resize(final_process, (800, 900)), (correct_answers+correct_answers2+correct_answers3), items, i)
@@ -127,7 +127,7 @@ def get_answer_keys(answer_key, original_key):
 
     firstCol = crop_image(answer_key, 80, 300, answer_key.shape[1], 300)
     secCol = crop_image(answer_key, 450, 300, answer_key.shape[1], 300)
-    thirdCol = crop_image(answer_key, 820, 300, answer_key.shape[1], 300)
+    thirdCol = crop_image(answer_key, 820, 310, answer_key.shape[1], 310)
 
     answer_key_bubbles = get_bubbles(firstCol)
     answer_key_bubbles2 = get_bubbles(secCol)
@@ -140,11 +140,11 @@ def get_answer_keys(answer_key, original_key):
         answer_key_bubbles2, original_key, 450, 300)
     process_3 = process_2
     process_3, correct_answers3 = get_shaded(
-        answer_key_bubbles3, original_key, 820, 300)
+        answer_key_bubbles3, original_key, 820, 310)
 
     # Resize image
     image = cv.resize(process_3, (800, 900))
-    #cv.imshow("Answer Key", image)
+    cv.imshow("Answer Key", image)
 
     correct_answers_list = np.array(
         (correct_answers, correct_answers2, correct_answers3
@@ -179,15 +179,16 @@ def get_bubbles(image):
 
         Returns Sorted Bubbles (Array)
     """
+    global n
     thresh = cv.threshold(image, 100, 255,
                           cv.THRESH_OTSU)[1]
     cnts, _ = cv.findContours(thresh, cv.RETR_EXTERNAL,
                               cv.CHAIN_APPROX_SIMPLE)
     bubbles = []
-    for c in cnts:
-        x, y, w, h = cv.boundingRect(c)
-        if w > 40 and h > 30:
-            bubbles.append(c)
+    for c in range(len(cnts)):
+        x, y, w, h = cv.boundingRect(cnts[c])
+        if w > 48 and w < 60 and h > 30:
+            bubbles.append(cnts[c])
 
     bubbles.sort(
         key=lambda x: get_contour_precedence(x, thresh.shape[1]))
@@ -206,7 +207,7 @@ def get_contour_precedence(contour, cols):
 
         Returns (numeric value)
     """
-    tolerance_factor = 70
+    tolerance_factor = 65
     origin = cv.boundingRect(contour)
     return ((origin[1] // tolerance_factor) * tolerance_factor) * cols + origin[0]
 
@@ -284,7 +285,7 @@ def check_shaded(contours, original_image, correct_answers, x_coord, y_coord):
         y = y + y_coord
         checked_image = original_image
         # cv.putText(checked_image, str(i), (x, y),
-        # cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
+        #           cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
         BGR = np.array(
             cv.mean(checked_image[y:y+h, x:x+w])).astype(np.uint8)
         if BGR[0] < 210:
@@ -334,7 +335,6 @@ def plot_score(imS, correct, items, n):
                        ", " + dt_string + "\n")
 
     save_path = current_directory + r"\Results"
-    print(save_path)
     cv.imwrite(os.path.join(
         save_path, f'{fullName}_CHKD_{dt_string}.jpg'), imS)
     cv.imshow("outsput" + str(n), imS)

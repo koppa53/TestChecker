@@ -105,18 +105,19 @@ import pytesseract as pyt
     cv.waitKey(0)
 """
 
+
 def name_detection(cover_image):
     x = 110
     y = 0
     h = 115
-    w = 300 
+    w = 300
     image = cover_image[y:y+h, x:x+w]
 
     """scale_percent = 100  # percent of original size
     width = int(image.shape[1] * scale_percent / 100)
     height = int(image.shape[0] * scale_percent / 100)
     dim = (width, height)"""
-    
+
     pyt.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
     grayscale = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
@@ -131,18 +132,17 @@ def name_detection(cover_image):
 
     #cv.imshow("images", threshold)
 
-
     for i in range(total_length):
         if int(float(content["conf"][i])) > 30:
             x, y, w, h = (content["left"][i], content["top"]
-                        [i], content["width"][i], content["height"][i])
-            image = cv.rectangle(image, (x, y), ((x+w), (y+h)), (0, 255, 0), 2)
+                          [i], content["width"][i], content["height"][i])
+            #image = cv.rectangle(image, (x, y), ((x+w), (y+h)), (0, 255, 0), 2)
 
     fullName = ""
     for j in content["text"]:
         if(j != ""):
             fullName = fullName + " " + j
-    
-    cv.imshow("cropped",image)
-    print(fullName)
+
+    # cv.imshow("cropped",image)
+    # print(fullName)
     return fullName
