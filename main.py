@@ -1,3 +1,14 @@
+"""
+    OMR (Optical Mark Recognition) Bubble Sheets Using OpenCV Python
+    Graphic User Interface Module
+    Authors:
+        JUSTINE BALDOVINO
+        JEFFERSON CLEMENTE
+        EXEQUIEL LUSTAN
+        JHOSUA MOSTAR
+    A requirement for CS Elective Computer Vision BSCS-4C.
+"""
+
 from tkinter import *
 from tkinter import filedialog
 from tkinter import font

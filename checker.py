@@ -1,5 +1,6 @@
 """
     OMR (Optical Mark Recognition) Bubble Sheets Using OpenCV Python
+    Checker Module
     Authors:
         JUSTINE BALDOVINO
         JEFFERSON CLEMENTE
