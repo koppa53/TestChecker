@@ -78,13 +78,16 @@ def process(sheet_path, key_path, paper):
                          processed_answer_key)
     passing = checker.getPassing()
     passing_var.set(str(passing) + "%")
-    msgbox = messagebox.askquestion("Success", "Checking Complete! Proceed to folder?")
+    msgbox = messagebox.askquestion(
+        "Success", "Checking Complete! Proceed to folder?")
     if msgbox == 'yes':
-        command = filedialog.askopenfilename(initialdir=os.path.normpath("Results"))
+        path = sheet_path.replace("/Answer Sheets", "/Results")
+        path = path.replace("/", "\\")
+        command = 'explorer.exe ' + path
+        print(command)
         os.system(command)
-    else :
+    else:
         messagebox.showinfo("Information", "Success!",)
-
 
 
 photo = PhotoImage(file="src/testchecker.png")
