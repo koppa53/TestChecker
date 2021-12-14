@@ -16,6 +16,7 @@ from PIL import ImageTk, Image
 from tkinter import messagebox
 import tkinter
 import checker
+import os
 
 # set directory
 sheet_path, key_path, paper = "", "", 0
@@ -77,13 +78,20 @@ def process(sheet_path, key_path, paper):
                          processed_answer_key)
     passing = checker.getPassing()
     passing_var.set(str(passing) + "%")
+    msgbox = messagebox.askquestion("Success", "Checking Complete! Proceed to folder?")
+    if msgbox == 'yes':
+        command = filedialog.askopenfilename(initialdir=os.path.normpath("Results"))
+        os.system(command)
+    else :
+        messagebox.showinfo("Information", "Success!",)
 
 
-photo = PhotoImage(file="testchecker.png")
+
+photo = PhotoImage(file="src/testchecker.png")
 gui.iconphoto(False, photo)
 myFont = font.Font(family='Century Gothic', size=14, weight='bold')
 
-my_img = Image.open("imageheader.png")
+my_img = Image.open("src/imageheader.png")
 
 resized = my_img.resize((542, 689))
 
