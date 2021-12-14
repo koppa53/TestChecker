@@ -145,7 +145,7 @@ def get_answer_keys(answer_key, original_key):
 
     # Resize image
     image = cv.resize(process_3, (800, 900))
-    cv.imshow("Answer Key", image)
+    #cv.imshow("Answer Key", image)
 
     correct_answers_list = np.array(
         (correct_answers, correct_answers2, correct_answers3
@@ -338,7 +338,7 @@ def plot_score(imS, correct, items, n):
     save_path = current_directory + r"\Results"
     cv.imwrite(os.path.join(
         save_path, f'{fullName}_CHKD_{dt_string}.jpg'), imS)
-    cv.imshow("outsput" + str(n), imS)
+    #cv.imshow("outsput" + str(n), imS)
 
 
 def getPassing():
