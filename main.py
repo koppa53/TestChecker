@@ -84,7 +84,6 @@ def process(sheet_path, key_path, paper):
         path = sheet_path.replace("/Answer Sheets", "/Results")
         path = path.replace("/", "\\")
         command = 'explorer.exe ' + path
-        print(command)
         os.system(command)
     else:
         messagebox.showinfo("Information", "Success!",)
